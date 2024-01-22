@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -21,8 +21,7 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - name: Build
-      run: npm run build
+    - run: npm run build # Замініть це на вашу команду збірки, якщо вона є
 
   deploy:
     needs: build
@@ -36,7 +35,9 @@ jobs:
       with:
         node-version: '14.x'
     - run: npm install
-    - run: npm run build
+    - run: npm run build # або ваша команда збірки
     - name: Deploy
-      run: ssh -i /path/to/ssh-key user@server-address 'cd /path/to/project && git pull && npm install && npm restart'
+      run: echo "Тут команда для розгортання вашого проекту"
+      # Використовуйте команди або дії для розгортання вашого проекту
+
 
