@@ -3,26 +3,25 @@ name: Node.js CI/CD
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
     - uses: actions/checkout@v2
 
-    - name: Set up SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H your-ec2-instance-public-ip >> ~/.ssh/known_hosts
-        chmod 644 ~/.ssh/known_hosts
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+
+    - run: npm install
+    - run: npm run build # Якщо у вас є кроки збірки
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ubuntu@54.92.184.95 'cd /telegram-bot && git pull && npm install && npm start'
-
-
-
+        scp -r * ubuntu@54.92.184.95:/telegram-bot
+        ssh ubuntu@54.92.184.95 "cd telegram-bot && npm start"
+      env:
+        DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
