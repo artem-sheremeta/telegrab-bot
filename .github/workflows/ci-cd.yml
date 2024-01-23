@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@54.92.184.95 'cd /telegram-bot && git pull && npm install && npm start'
+        ssh -o StrictHostKeyChecking=no ubuntu@54.92.184.95 'cd /telegram-bot && git pull && npm install && npm start'
 
 
 
