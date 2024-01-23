@@ -20,8 +20,11 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        scp -o StrictHostKeyChecking=no -i "C:\Users\Shere\OneDrive\Рабочий стол\key\bot-key.pem" -r * ubuntu@54.92.184.95:/home/ubuntu/telegram-bot
-        ssh -o StrictHostKeyChecking=no -i "C:\Users\Shere\OneDrive\Рабочий стол\key\bot-key.pem" ubuntu@54.92.184.95 "cd /home/ubuntu/telegram-bot && npm start"
+        echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
+        chmod 600 deploy_key.pem
+        scp -o StrictHostKeyChecking=no -i deploy_key.pem -r * ubuntu@54.92.184.95:/home/ubuntu/telegram-bot
+        ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@54.92.184.95 "cd /home/ubuntu/telegram-bot && npm start"
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
 
