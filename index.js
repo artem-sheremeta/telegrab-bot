@@ -6,6 +6,7 @@ const {
   getListLanguages,
   getLanguages,
 } = require("./translationRequest");
+
 const {
   clickStart,
   clickBack,
@@ -21,12 +22,81 @@ const {
   deleteWordFromDatabase,
   findWordInDatabase,
 } = require("./databaseOperations");
+const {
+  initializeGame,
+  showQuestion,
+  generateLevelQuestions,
+  checkLevelUp,
+  getUserGameData,
+  updateInlineKeyboardForQuestion,
+  navigateQuestions,
+  areAllQuestionsAnswered,
+} = require("./game");
 
 const bot = new TelegramBot(token, { polling: true });
 
 const userContext = {
   currentKey: String,
 };
+
+bot.onText(/Test 📝/, (msg) => {
+  const chatId = msg.chat.id;
+  const gameData = initializeGame(chatId);
+  generateLevelQuestions(gameData, chatId, bot);
+});
+
+bot.on("callback_query", async (callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const messageId = callbackQuery.message.message_id;
+  const callbackData = callbackQuery.data;
+  const gameData = getUserGameData(chatId);
+
+  if (
+    !gameData ||
+    !gameData.questions ||
+    gameData.currentQuestionIndex < 0 ||
+    gameData.currentQuestionIndex >= gameData.questions.length
+  ) {
+    await bot.sendMessage(chatId, "Спочатку почніть гру командою /Game 🕹️");
+    return;
+  }
+  if (
+    gameData.questions &&
+    gameData.currentQuestionIndex >= 0 &&
+    gameData.currentQuestionIndex < gameData.questions.length
+  ) {
+    const currentQuestion = gameData.questions[gameData.currentQuestionIndex];
+
+    if (callbackData.startsWith("answer_")) {
+      if (!currentQuestion.answered) {
+        const answerIndex = parseInt(callbackData.split("_")[1]);
+        const isCorrect = currentQuestion.answers[answerIndex].isCorrect;
+
+        currentQuestion.answered = true;
+        currentQuestion.isCorrectAnswer = isCorrect;
+        gameData.points += isCorrect ? 10 : 0;
+
+        currentQuestion.answers.forEach((answer, idx) => {
+          answer.answered = true;
+          answer.isCorrectAnswer = idx === answerIndex ? isCorrect : !isCorrect;
+        });
+
+        updateInlineKeyboardForQuestion(
+          currentQuestion,
+          chatId,
+          messageId,
+          bot
+        );
+        if (areAllQuestionsAnswered(gameData.questions)) {
+          checkLevelUp(gameData, bot, chatId, messageId);
+        }
+      }
+    } else if (callbackData === "next" || callbackData === "prev") {
+      navigateQuestions(gameData, callbackData);
+      await showQuestion(chatId, bot, gameData);
+    }
+  }
+});
 
 //button and commands for ignoring
 const buttonCommands = [

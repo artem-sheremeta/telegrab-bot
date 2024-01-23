@@ -3,7 +3,7 @@ const mysql = require("mysql2/promise");
 const connectToDatabase = async () => {
   try {
     const connection = await mysql.createConnection({
-      host: "localhost",
+      host: "127.0.0.1",
       user: "root",
       password: "Aa.0912873465",
       database: "telegram-bot_db",

@@ -1,20 +1,24 @@
 {
   "name": "translate-telegram-bot",
   "version": "1.0.0",
-  "description": "",
+  "description": "Telegram bot for translation services",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "dev": "nodemon index.js",
+    "build": "echo \"Build steps (if any)\""
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
-    "mysql2": "^3.6.5",
+    "axios": "^1.6.5",
+    "dotenv": "^16.3.2",
+    "mysql2": "^3.7.1",
     "node-telegram-bot-api": "^0.64.0",
-    "nodemon": "^3.0.1",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
   }
 }

@@ -1,5 +1,8 @@
 const menu = {
-  mainMenu: [["Interpreter 🔁", "Define the language 🔍", "Info ℹ️"]],
+  mainMenu: [
+    ["Interpreter 🔁", "Define the language 🔍"],
+    ["Test 📝", "Info ℹ️"],
+  ],
   languageSelection: [
     ["Ukrainian 🇺🇦", "English 🏴󠁧󠁢󠁥󠁮󠁧󠁿"],
     ["Select another language 🌐", " ⬅️ Back"],
