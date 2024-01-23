@@ -17,11 +17,10 @@ jobs:
         node-version: '14.x'
 
     - run: npm install
-    - run: npm run build # Якщо у вас є кроки збірки
 
     - name: Deploy to EC2
       run: |
-        scp -r * ubuntu@54.92.184.95:/telegram-bot
+        scp -r * ubuntu@54.92.184.95:telegram-bot
         ssh ubuntu@54.92.184.95 "cd telegram-bot && npm start"
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
