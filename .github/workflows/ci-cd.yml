@@ -20,6 +20,8 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@54.92.184.95 "cd /telegram-bot && git pull && npm install && npm start"
+        scp -o StrictHostKeyChecking=no -i deploy_key.pem -r * ubuntu@54.92.184.95:/home/ubuntu/telegram-bot
+        ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@54.92.184.95 "cd /home/ubuntu/telegram-bot && npm start"
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+
