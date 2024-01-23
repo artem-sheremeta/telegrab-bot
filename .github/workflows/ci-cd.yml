@@ -17,12 +17,10 @@ jobs:
         node-version: '14.x'
 
     - run: npm install
+    - run: npm run build # Якщо у вас є кроки збірки
 
     - name: Deploy to EC2
       run: |
-        echo "${{ secrets.DEPLOY_KEY }}" > deploy_key.pem
-        chmod 600 deploy_key.pem
-        scp -o StrictHostKeyChecking=no -i deploy_key.pem -r * ubuntu@54.92.184.95:/telegram-bot
-        ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@54.92.184.95 "cd /telegram-bot && npm start"
+        ssh -o StrictHostKeyChecking=no -i deploy_key.pem ubuntu@54.92.184.95 "cd /telegram-bot && git pull && npm install && npm start"
       env:
         DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
